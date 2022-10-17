@@ -6,9 +6,10 @@ ARG DAV1D_VERSION=1.0.0
 ARG DAV1D_URL="https://code.videolan.org/videolan/dav1d/-/archive/$DAV1D_VERSION/dav1d-$DAV1D_VERSION.tar.gz"
 ARG DAV1D_SHA256=047b8229511a82b5718a1d34c86c067b078efd02f602986d2ed09b23182ec136
 
-# bump: alpine /FROM alpine:([\d.]+)/ docker:alpine|^3
-# bump: alpine link "Release notes" https://alpinelinux.org/posts/Alpine-$LATEST-released.html
-FROM alpine:3.16.2 AS base
+# Must be specified
+ARG ALPINE_VERSION
+
+FROM alpine:${ALPINE_VERSION} AS base
 
 FROM base AS download
 ARG DAV1D_URL
@@ -30,9 +31,14 @@ COPY --from=download /tmp/dav1d/ /tmp/dav1d/
 WORKDIR /tmp/dav1d
 RUN \
   apk add --no-cache --virtual build \
-    build-base meson ninja nasm && \
+    build-base meson ninja nasm pkgconf && \
   meson build --buildtype release -Ddefault_library=static && \
   ninja -j$(nproc) -C build install && \
+  # Sanity tests
+  pkg-config --exists --modversion --path dav1d && \
+  ar -t /usr/local/lib/libdav1d.a && \
+  readelf -h /usr/local/lib/libdav1d.a && \
+  # Cleanup
   apk del build
 
 FROM scratch

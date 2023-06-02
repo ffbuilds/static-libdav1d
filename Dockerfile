@@ -3,9 +3,9 @@
 # bump: dav1d /DAV1D_VERSION=([\d.]+)/ https://code.videolan.org/videolan/dav1d.git|*
 # bump: dav1d after ./hashupdate Dockerfile DAV1D $LATEST
 # bump: dav1d link "Release notes" https://code.videolan.org/videolan/dav1d/-/tags/$LATEST
-ARG DAV1D_VERSION=1.1.0
+ARG DAV1D_VERSION=1.2.1
 ARG DAV1D_URL="https://code.videolan.org/videolan/dav1d/-/archive/$DAV1D_VERSION/dav1d-$DAV1D_VERSION.tar.gz"
-ARG DAV1D_SHA256=b163791a587c083803a3db2cd18b4fbaf7fb865b47d038c4869ffef7722b6b16
+ARG DAV1D_SHA256=2dd85860d213479672b1c708e31593446e8c2b53ff41e2ca25a2eafb718424e2
 
 # Must be specified
 ARG ALPINE_VERSION

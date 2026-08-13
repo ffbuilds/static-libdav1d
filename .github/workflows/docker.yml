@@ -3,6 +3,8 @@ name: Create and publish a Docker image
 
 on:
   workflow_dispatch:
+  repository_dispatch:
+    types: [rebuild]
   push:
     branches: [main]
   pull_request:
@@ -11,6 +13,9 @@ on:
 jobs:
   docker:
     uses: ffbuilds/.github/.github/workflows/docker.yml@main
+    with:
+      push_images: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
     secrets:
       APP_ID: ${{ secrets.APP_ID }}
       APP_PRIVATE_KEY: ${{ secrets.APP_PRIVATE_KEY }}
+
